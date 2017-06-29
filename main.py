@@ -1,22 +1,25 @@
 from spydetails import spy, friends, Spy, ChatMessage
 from steganography.steganography import Steganography
+from datetime import datetime
+from termcolor import colored
 
 #written by surbhi rawat
-#how to print in python
-print 'hello!'
+#how to print in python in double quotes
+print "hello!"
 
 #single quotes can be well defined by using backslash
+print 'let\'s get started'
 
 #default statuses. these status lies outside the function and can be declare as global. here the list of older status
 #has been stored in a list
-STATUS_MESSAGE = ['Hey there! ', 'Spy is working on something ', 'Work in progress.']
+STATUS_MESSAGE = ['we are on a mission! ', 'Spy is working on something ', 'Work in progress', 'mission accomplished.']
 
 
 #creating friends list:
 
 #friends = []
 
-print 'let\'s get started'
+
 
 question = raw_input("Do you want to continue as " + " " + spy.salutation + " " + spy.name + "(Y/N)?")
 
@@ -70,14 +73,14 @@ def add_friend():
     new_friend = Spy( '',0,'',0.0)
 
     new_friend.name = raw_input("add your friends name:")
-    new_friend.salutation = raw_input("are they Mr. or Ms.?:")
+    new_friend.salutation = raw_input("are they Mr. or Ms.:?")
 
     new_friend.name = new_friend.name + " " + new_friend.salutation
 
     new_friend.age = int(raw_input("age?"))
     new_friend.rating = float(raw_input("spy rating?"))
 
-    #to create a function to check the spy friend's age, rating and to check that the name should not be empty
+    #to create a function to check the spy's friend's age, rating and to check that the name should not be empty
 
     if len(new_friend.name) > 0 and new_friend.age > 12 and new_friend.rating >= spy.rating:
         friends.append(new_friend)
@@ -139,17 +142,27 @@ def read_message():
 
 
 
-#function to read chat history of a friend
+#function to read chat history of a friend by selecting one of the friend
 def read_chat_history():
     read_for = select_a_friend()
 
-    print '\n6'
+    #print 'you have no previous chats'
+    if len(friends[read_for].chats) > 0:
 
-    for chat in friends[read_for].chats:
-        if chat.sent_by_me:
-            print '[%s] %s: %s' % (chat.time.strftime("%d %B %D"), 'you said:', chat.message)
-        else:
-            print'[%s] %s said: %s' % (chat.time.strftime("%d %B %Y"), friends[read_for].name, chat.message)
+        for chat in friends[read_for].chats:
+            #if chat is sent by spy
+            if chat.sent_by_me:
+                print '[%s] %s: %s' % (chat.time.strftime(colored("%d %B %D", 'blue')),
+                                       colored('you said:', 'red'), chat.message)
+             #if chat is not sent by spy
+            elif not chat.sent_by_me:
+                 print'[%s] %s said: %s' % (chat.time.strftime(colored("%d %B %Y", 'blue')),
+                                            friends[read_for].name, chat.message)
+
+     #otherwise print there are no old chats
+    else:
+        print colored('there is no previous chats', 'red')
+
 
 #update spy-status
 
@@ -158,11 +171,21 @@ def start_chat(spy):
 
   spy.name = spy.salutation + " " + spy.name
 
-  #to know about the spy age
+  #to know about the spy age if it lies between 12 and 50
   if spy.age >12 and spy.age < 50:
 
-      print "authentication complete. welcome" + spy.name + "age:" + str(spy.age) + "and rating of:" + \
+      print "authentication complete. welcome " + spy.name + " age: " + str(spy.age) + " and rating of: " + \
             str(spy.rating) + "proud to have you on board"
+
+       #to check the spy's rating
+      if spy.rating > 4.5:
+          print 'awesome!'
+      elif spy.rating > 3.5 and spy.rating <= 4.5:
+          print 'You are smart enough.'
+      elif spy.rating >= 2.5 and spy.rating <= 3.5:
+          print 'You can do better'
+      else:
+          print 'We have other options too.'
 
       #to set all the options available for the application
       show_menu = True
@@ -207,6 +230,7 @@ else:
     spy.name = raw_input("welcome to spychat. tell me your name:")
 
     if len(spy.name) > 0:
+
         spy.salutation = raw_input("what should we call you(Mr. or Ms.)?")
 
         spy.age = int(raw_input("what is your age:"))
